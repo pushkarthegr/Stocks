@@ -1,0 +1,142 @@
+<html>
+    <head>
+        <title>Stock Organizer - Edit Stock</title>
+         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/live/3.1/firebase.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body{
+        background-color:#F5EFE7;
+        font-family: 'Roboto', sans-serif;
+        font-weight:bold;
+    }
+    #nerdy{
+        background-color: #D8C4B6;
+        width:fit-content;
+        height:fit-content;
+        padding:35px 15%;
+        margin-top: 45px;
+    }
+    .bruh{
+        border-bottom: #F5EFE7 2px solid;
+        width:200px;
+        padding: 10px 0px;
+    }
+    button+button{
+        margin-left: 25px;
+    }
+    #orfen{
+        display: none;
+    }
+  </style>
+    </head>
+    <body>
+        <button class="btn btn-primary" onclick="window.location='index.html'" style="transform: scale(1.2);"><< Back</button>
+        <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" id="mes">&times;</button>
+          <h4 class="modal-title">Edit Stock</h4>
+        </div>
+        <div class="modal-body">
+            <input class="form-control" placeholder="Add the name of the stock" type="text" width="150px" id="h1"><br><br>
+            <input class="form-control" placeholder="Add the Amount" type="number" width="150px" id="h2"><br><br>
+            <input class="form-control" placeholder="Add the buy price" type="number" width="150px" id="h3"><br><br>
+            <button class="btn btn-danger" onclick="edit1()">Edit</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <button data-toggle="modal" data-target="#myModal" id="orfen"></button>
+        <center>
+            <h1>Here are your stocks</h1>
+            <div id="nerdy">
+
+            </div>
+        </center>
+        <script>
+        Name = "";
+        Amount = 0;
+        Price = 0;
+        Dates = 0;
+        key = 0;
+            const firebaseConfig = {
+                apiKey: "AIzaSyD5FHdRtRtAZHVAdaXOTIAG7qPVJApzOFk",
+                authDomain: "stock-fd93b.firebaseapp.com",
+                databaseURL:"https://stock-fd93b-default-rtdb.firebaseio.com",
+                projectId: "stock-fd93b",
+                storageBucket: "stock-fd93b.appspot.com",
+                messagingSenderId: "545670483992",
+                appId: "1:545670483992:web:2665cfd669b86bc662f36d",
+            };
+            firebase.initializeApp(firebaseConfig);
+            
+                firebase.database().ref("/" + "StockShow").on('value', function (snapshot) {
+                    document.getElementById("nerdy").innerHTML = "";
+            snapshot.forEach(function (childSnapshot) {
+                  childKey = childSnapshot.key; 
+                  childData = childSnapshot.val(); 
+                    Name = childData["Name"];
+                    Amount = childData["Amount"];
+                    Price = childData["Price"];
+                    Dates = childData["Dates"];
+                    row = "<div class='bruh'><h4>"+Name+"</h4><button class='btn btn-danger' value="+childKey+" onclick='delme(this.value)'>Delete</button><button class='btn btn-success' value="+childKey+" onclick='edit(this.value)'>Edit</button><br></div>";
+                    document.getElementById("nerdy").innerHTML += row;
+
+            });
+      });
+      function delme(heme){
+        firebase.database().ref("StockShow"+"/"+heme).remove();
+      } 
+      function edit(breme){
+        Name = "";
+        Amount = 0;
+        Price = 0;
+        Dates = 0;
+        key = breme;
+        firebase.database().ref("/" + "StockShow").on('value', function (snapshot) {
+            snapshot.forEach(function (childSnapshot) {
+                  childKey = childSnapshot.key; 
+                  childData = childSnapshot.val(); 
+                    if(childKey == breme){
+                        Name = childData["Name"];
+                    Amount = childData["Amount"];
+                    Price = childData["Price"];
+                    Dates = childData["Dates"];
+                    }
+            });
+      });
+      document.getElementById("h3").value = Price;
+        document.getElementById("h2").value = Amount;
+        document.getElementById("h1").value = Name;
+        document.getElementById("orfen").click();
+
+      }
+      function edit1(){
+        if(document.getElementById("h1").value!=""||document.getElementById("h2").value!=""||document.getElementById("h3").value!=""){
+            firebase.database().ref("StockShow"+"/"+key).remove();
+            firebase.database().ref("StockShow").push({
+                        Name:document.getElementById("h1").value,
+                        Amount:document.getElementById("h2").value,
+                        Price:document.getElementById("h3").value,
+                        Dates:Dates
+                });
+                document.getElementById("mes").click();
+        }
+
+      }
+        </script>
+    </body>
+</html>

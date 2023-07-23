@@ -1,0 +1,72 @@
+<html>
+    <head>
+        <title>Stock Organizer - Add Stock</title>
+         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/live/3.1/firebase.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body{
+        background-color:#F5EFE7;
+        font-family: 'Roboto', sans-serif;
+        font-weight:bold;
+    }
+    .nerd{
+        background-color: #D8C4B6;
+        width:fit-content;
+        height:fit-content;
+        padding:35px 10%;
+        margin-top: 45px;
+    }
+    button{
+        transform: scale(1.2);
+    }
+    td{
+        padding:5px 20px;
+    }
+  </style>
+    </head>
+    <body>
+        <button class="btn btn-primary" onclick="window.location='index.html'"><< Back</button>
+        <center>
+            <h1>Here are your stocks</h1>
+            <br><br>
+            <table id="nerdy" border="1">
+                <tr><td><b>Name of the Company</b></td><td><b>Amount You Have</b></td><td><b>Buy Price</b></td><td><b>Date of buy</b></td></tr>
+            </table>
+        </center>
+        <script>
+            const firebaseConfig = {
+                apiKey: "AIzaSyD5FHdRtRtAZHVAdaXOTIAG7qPVJApzOFk",
+                authDomain: "stock-fd93b.firebaseapp.com",
+                databaseURL:"https://stock-fd93b-default-rtdb.firebaseio.com",
+                projectId: "stock-fd93b",
+                storageBucket: "stock-fd93b.appspot.com",
+                messagingSenderId: "545670483992",
+                appId: "1:545670483992:web:2665cfd669b86bc662f36d",
+            };
+            firebase.initializeApp(firebaseConfig);
+            
+                firebase.database().ref("/" + "StockShow").on('value', function (snapshot) {
+                    document.getElementById("nerdy").innerHTML = "<tr><td><b>Name of the Company</b></td><td><b>Amount You Have</b></td><td><b>Buy Price</b></td><td><b>Date of buy</b></td></tr>";
+            snapshot.forEach(function (childSnapshot) {
+                  childKey = childSnapshot.key; 
+                  childData = childSnapshot.val(); 
+                    Name = childData["Name"];
+                    Amount = childData["Amount"];
+                    Price = childData["Price"];
+                    Dates = childData["Dates"];
+                    row = "<tr><td>"+Name+"</td><td>"+Amount+"</td><td>"+Price+"</td><td>"+Dates+"</td></tr>";
+                    document.getElementById("nerdy").innerHTML += row;
+
+            });
+      });     
+        </script>
+    </body>
+</html>
